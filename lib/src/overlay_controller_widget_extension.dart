@@ -5,8 +5,7 @@ import 'overlay_controller_widget.dart';
 ///Just a extension to make it cleaner to show or hide the overlay
 extension OverlayControllerWidgetExtension on BuildContext {
   @Deprecated('Use context.loaderOverlay instead')
-  OverlayControllerWidget? getOverlayController() =>
-      OverlayControllerWidget.of(this);
+  OverlayControllerWidget? getOverlayController() => OverlayControllerWidget.of(this);
 
   ///Extension created to show the overlay
   @Deprecated('Use context.loaderOverlay.show() instead')
@@ -24,35 +23,18 @@ extension OverlayControllerWidgetExtension on BuildContext {
 }
 
 class _OverlayExtensionHelper {
-  static final _OverlayExtensionHelper _singleton =
-      _OverlayExtensionHelper._internal();
-  late OverlayControllerWidget _overlayController;
+  OverlayControllerWidget? _overlayController;
 
-  Widget? _widget;
-  bool? _visible;
+  OverlayControllerWidget? get overlayController => _overlayController;
+  bool get visible => _overlayController?.visible ?? false;
 
-  OverlayControllerWidget get overlayController => _overlayController;
-  bool get visible => _visible ?? false;
-
-  factory _OverlayExtensionHelper(OverlayControllerWidget? overlayController) {
-    if (overlayController != null) {
-      _singleton._overlayController = overlayController;
-    }
-
-    return _singleton;
-  }
-  _OverlayExtensionHelper._internal();
-
-  Type? get overlayWidgetType => _widget?.runtimeType;
-
-  void show({Widget? widget}) {
-    _widget = widget;
-    _visible = true;
-    _overlayController.setOverlayVisible(_visible!, widget: _widget);
+  _OverlayExtensionHelper(OverlayControllerWidget? overlayController) {
+    _overlayController = overlayController;
   }
 
-  void hide() {
-    _visible = false;
-    _overlayController.setOverlayVisible(_visible!);
-  }
+  Type? get overlayWidgetType => _overlayController?.widget?.runtimeType;
+
+  void show({Widget? widget}) => _overlayController?.setOverlayVisible(true, widget: widget);
+
+  void hide() => _overlayController?.setOverlayVisible(false);
 }

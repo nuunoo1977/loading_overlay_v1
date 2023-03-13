@@ -89,8 +89,7 @@ class LoaderOverlay extends StatefulWidget {
 
   static const defaultOverlayColor = Colors.grey;
 
-  static const containerForOverlayColorKey =
-      Key('$_prefix/container-for-overlay-color');
+  static const containerForOverlayColorKey = Key('$_prefix/container-for-overlay-color');
 
   static const useDefaultLoadingValue = true;
 
@@ -129,15 +128,14 @@ class _LoaderOverlayState extends State<LoaderOverlay> {
     return OverlayControllerWidget(
       child: Builder(
         builder: (innerContext) => StreamBuilder<Map<String, dynamic>>(
-          stream: innerContext.loaderOverlay.overlayController.visibilityStream,
+          stream: innerContext.loaderOverlay.overlayController!.visibilityStream,
           initialData: const <String, dynamic>{
             'loading': false,
             'widget': null,
           },
           builder: (_, snapshot) {
             // ignore: unused_local_variable
-            final visibilityStream =
-                innerContext.loaderOverlay.overlayController.visibilityStream;
+            final visibilityStream = innerContext.loaderOverlay.overlayController!.visibilityStream;
             final isLoading = snapshot.data!['loading'] as bool;
             final widgetOverlay = snapshot.data!['widget'] as Widget?;
 
@@ -178,22 +176,18 @@ class _LoaderOverlayState extends State<LoaderOverlay> {
           onWillPop: () async => !widget.disableBackButton,
           child: Opacity(
             key: LoaderOverlay.opacityWidgetKey,
-            opacity: isLoading
-                ? (widget.overlayOpacity ?? LoaderOverlay.defaultOpacityValue)
-                : 0,
+            opacity: isLoading ? (widget.overlayOpacity ?? LoaderOverlay.defaultOpacityValue) : 0,
             child: widget.overlayWholeScreen
                 ? Container(
                     key: LoaderOverlay.containerForOverlayColorKey,
-                    color: widget.overlayColor ??
-                        LoaderOverlay.defaultOverlayColor,
+                    color: widget.overlayColor ?? LoaderOverlay.defaultOverlayColor,
                   )
                 : Center(
                     child: Container(
                       height: widget.overlayHeight,
                       width: widget.overlayWidth,
                       key: LoaderOverlay.containerForOverlayColorKey,
-                      color: widget.overlayColor ??
-                          LoaderOverlay.defaultOverlayColor,
+                      color: widget.overlayColor ?? LoaderOverlay.defaultOverlayColor,
                     ),
                   ),
           ),
@@ -201,9 +195,7 @@ class _LoaderOverlayState extends State<LoaderOverlay> {
         if (widgetOverlay != null)
           _widgetOverlay(widgetOverlay)
         else
-          widget.useDefaultLoading
-              ? _getDefaultLoadingWidget()
-              : widget.overlayWidget!,
+          widget.useDefaultLoading ? _getDefaultLoadingWidget() : widget.overlayWidget!,
       ];
 
   Widget _widgetOverlay(Widget widget) => SizedBox(
