@@ -1,5 +1,7 @@
 library loader_overlay;
 
+import 'dart:math';
+
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter/material.dart';
 
@@ -79,17 +81,9 @@ class LoaderOverlay extends StatefulWidget {
   /// The layout builder for the overlay
   final Widget Function(Widget?, List<Widget>) layoutBuilder;
 
-  static const _prefix = '@loader-overlay';
-
-  static const defaultOverlayWidgetKey = Key('$_prefix/default-widget');
-
-  static const opacityWidgetKey = Key('$_prefix/opacity-widget');
-
   static const defaultOpacityValue = 0.4;
 
   static const defaultOverlayColor = Colors.grey;
-
-  static const containerForOverlayColorKey = Key('$_prefix/container-for-overlay-color');
 
   static const useDefaultLoadingValue = true;
 
@@ -100,6 +94,25 @@ class LoaderOverlay extends StatefulWidget {
 // Has the Center CircularProgressIndicator as the default loader
 class _LoaderOverlayState extends State<LoaderOverlay> {
   OverlayControllerWidget? _overlayControllerWidget;
+  late Key _containerForOverlayColorKey; // = Key('$_prefix/container-for-overlay-color');
+  late Key _defaultOverlayWidgetKey; //= Key('$_prefix/default-widget');
+  late Key _opacityWidgetKey; // = Key('$_prefix/opacity-widget');
+
+  String _getRandomString(int length) {
+    const _chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+    final _rnd = Random();
+    return String.fromCharCodes(
+        Iterable.generate(length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
+  }
+
+  @override
+  void initState() {
+    final String prefix = _getRandomString(10);
+    _containerForOverlayColorKey = Key('$prefix/container-for-overlay-color');
+    _defaultOverlayWidgetKey = Key('$prefix/default-widget');
+    _opacityWidgetKey = Key('$prefix/opacity-widget');
+    super.initState();
+  }
 
   @override
   void didChangeDependencies() {
@@ -175,18 +188,18 @@ class _LoaderOverlayState extends State<LoaderOverlay> {
         WillPopScope(
           onWillPop: () async => !widget.disableBackButton,
           child: Opacity(
-            key: LoaderOverlay.opacityWidgetKey,
+            key: _opacityWidgetKey,
             opacity: isLoading ? (widget.overlayOpacity ?? LoaderOverlay.defaultOpacityValue) : 0,
             child: widget.overlayWholeScreen
                 ? Container(
-                    key: LoaderOverlay.containerForOverlayColorKey,
+                    key: _containerForOverlayColorKey,
                     color: widget.overlayColor ?? LoaderOverlay.defaultOverlayColor,
                   )
                 : Center(
                     child: Container(
                       height: widget.overlayHeight,
                       width: widget.overlayWidth,
-                      key: LoaderOverlay.containerForOverlayColorKey,
+                      key: _containerForOverlayColorKey,
                       color: widget.overlayColor ?? LoaderOverlay.defaultOverlayColor,
                     ),
                   ),
@@ -207,9 +220,9 @@ class _LoaderOverlayState extends State<LoaderOverlay> {
         ),
       );
 
-  Widget _getDefaultLoadingWidget() => const Center(
+  Widget _getDefaultLoadingWidget() => Center(
         child: CircularProgressIndicator.adaptive(
-          key: LoaderOverlay.defaultOverlayWidgetKey,
+          key: _defaultOverlayWidgetKey,
         ),
       );
 }

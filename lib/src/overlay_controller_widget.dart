@@ -16,7 +16,7 @@ class OverlayControllerWidget extends InheritedWidget {
   }) : super(key: key, child: child);
 
   static OverlayControllerWidget? of(BuildContext context) =>
-      context.findAncestorWidgetOfExactType<OverlayControllerWidget>();
+      context.mounted ? context.findAncestorWidgetOfExactType<OverlayControllerWidget>() : null;
 
   final StreamController<Map<String, dynamic>> visibilityController = StreamController();
   final _state = OverlayControllerWidgetState();
